@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Thehome from "../views/Thehome.vue";
 import Category from "../views/Category.vue";
 import Article from "../views/Article";
+import Date from "../views/Date";
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,13 @@ const routes = [
       { path: "/", name: "thehome", component: Thehome },
       { path: "/category", name: "category", component: Category },
       { path: "/Article", name: "Article", component: Article },
+      { path: "/Date", name: "Date", component: Date },
+      {
+        path: "/article/:blogId",
+        name: "Article",
+        component: Article,
+        props: true,
+      },
     ],
   },
   {

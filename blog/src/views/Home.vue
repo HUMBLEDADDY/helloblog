@@ -3,26 +3,29 @@
     <div class="info">
       <div class="indexlogo"></div>
       <div class="logoname">HELLO</div>
-      <div class="mydream">{{words.join("")}}</div>
+      <div class="mydream">{{ words.join("") }}</div>
       <div class="writter">Designed by Z&B and IDK</div>
       <div class="studio">Proudly published with @领航工作室</div>
     </div>
     <div class="content">
       <div class="head">
-        <div>
+        <div class="function">
           <router-link class="nav-link" tag="div" to="/">Home</router-link>
         </div>
-        <div>
-          <router-link class="nav-link" tag="div" to="/category">Category</router-link>
+        <div class="function">
+          <router-link class="nav-link" tag="div" to="/category"
+            >Group by tag</router-link
+          >
         </div>
-        <div>
-          <router-link class="nav-link" tag="div" to="/tips">Tips</router-link>
-        </div>
-        <div>
-          <router-link class="nav-link" tag="div" to="/about">About</router-link>
+        <div class="function">
+          <router-link class="nav-link" tag="div" to="/date"
+            >Group by year</router-link
+          >
         </div>
       </div>
-      <router-view></router-view>
+      <div class="maincontent" v-loading="this.$Global.loading">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -31,10 +34,11 @@
 .main {
   width: 100%;
   height: 100vh;
-  background-color: white;
+
   .info {
+    background-color: #49726c;
     position: fixed;
-    width: 40%;
+    width: 20%;
     height: 100vh;
     float: left;
     border-right: 1px solid rgb(235, 235, 235);
@@ -62,10 +66,11 @@
       letter-spacing: 5px;
       font-weight: bold;
       font-size: 1em;
+      color: white;
     }
     .mydream {
       display: block;
-      color: rgb(128, 128, 128);
+      color: rgb(201, 201, 201);
       margin-top: 2vh;
       font-size: 0.9em;
       white-space: nowrap;
@@ -78,7 +83,7 @@
     .studio {
       font-size: 0.3em;
       font-weight: lighter;
-      color: rgb(145, 145, 145);
+      color: rgb(53, 53, 53);
       position: absolute;
     }
     .writter {
@@ -89,23 +94,63 @@
     }
   }
   .content {
-    width: 60%;
+    height: 100vh;
+    width: 80%;
     position: relative;
     float: right;
     animation: contentin 1s forwards;
     .head {
-      height: 80px;
+      position: relative;
+      height: 10vh;
       width: 100%;
       border-bottom: 1px solid rgb(235, 235, 235);
       display: flex;
-      line-height: 80px;
-      padding-left: 20px;
-      .nav-link {
-        margin-left: 20px;
-        margin-right: 20px;
-        color: rgb(102, 102, 102);
-        font-size: 1.1em;
+      line-height: 10vh;
+      left: -1px;
+      z-index: 1000;
+      .function {
+        position: relative;
+        width: 150px;
+        transition: 1s;
+        transform-style: preserve-3d;
+        z-index: 10;
+        .nav-link {
+          color: rgb(102, 102, 102);
+          font-size: 1.1em;
+          transition: 1s;
+          letter-spacing: 1px;
+          cursor: pointer;
+        }
       }
+      .function:hover {
+        width: 200px;
+        transition: 1s;
+      }
+      .function:hover .nav-link {
+        letter-spacing: 5px;
+        color: #fff;
+        transition: 1s;
+      }
+      .function:hover::after {
+        top: -102%;
+        transition: 1s;
+      }
+      .function::after {
+        transform: translateZ(-1px);
+        position: relative;
+        transition: 1s;
+        top: -202%;
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-color: #49726c;
+      }
+    }
+    .maincontent {
+      background-color: #f5f5f5;
+      height: 90vh;
     }
   }
 }
@@ -155,7 +200,7 @@
 
 <script>
 // @ is an alias to /src
-
+import Global from "@/components/Global";
 export default {
   name: "Home",
   data() {
@@ -174,7 +219,6 @@ export default {
     //开始输入的效果动画
     begin() {
       this.letters = this.str.split("");
-      console.log(this.letters);
       for (var i = 0; i < this.letters.length; i++) {
         setTimeout(this.write(i), i * 100);
       }
@@ -191,11 +235,10 @@ export default {
       return () => {
         let L = this.letters.length;
         this.words.push(this.letters[i]);
-        console.log(this.words);
         let that = this;
         /*如果输入完毕，在2s后开始删除*/
         if (i == L - 1) {
-          setTimeout(function () {
+          setTimeout(function() {
             that.back();
           }, 2000);
         }
@@ -209,7 +252,7 @@ export default {
         if (this.words.length == 0) {
           this.order++;
           let that = this;
-          setTimeout(function () {
+          setTimeout(function() {
             that.begin();
           }, 300);
         }

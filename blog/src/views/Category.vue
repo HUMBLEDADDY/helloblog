@@ -1,30 +1,40 @@
 <template>
   <div>
-    <Category>
-      <Article class="article"></Article>
-      <Article class="article"></Article>
-    </Category>
-    <Category>
-      <Article class="article"></Article>
-      <Article class="article"></Article>
+    <Category
+      v-for="(tags, i) in this.tags"
+      :key="i"
+      :index="i"
+      :tags="tags"
+      class="tag"
+    >
     </Category>
   </div>
 </template>
+
+<script>
+import Global from "@/components/Global";
+export default {
+  data() {
+    return {
+      tags: [],
+    };
+  },
+  methods: {
+    async gettags() {
+      Global.loading = true;
+      const res = await this.$http.get("blog/blogListByTag");
+      this.tags = res.data.data;
+      console.log(this.tags);
+      Global.loading = false;
+    },
+  },
+  created() {
+    this.gettags();
+  },
+};
+</script>
 <style lang="scss">
-.article {
-  z-index: 1;
-  position: relative;
-  animation: showarticle 0.5s forwards;
-  opacity: 0;
-}
-@keyframes showarticle {
-  from {
-    top: -50px;
-    opacity: 0;
-  }
-  to {
-    top: 0px;
-    opacity: 1;
-  }
+.tag {
+  overflow: hidden;
 }
 </style>

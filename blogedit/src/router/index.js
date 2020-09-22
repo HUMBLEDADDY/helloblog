@@ -5,8 +5,8 @@ import Login from "../views/Login.vue";
 import Article from "../views/Article.vue";
 import Articleedit from "../views/Articleedit.vue";
 import Console from "../views/Console.vue";
+import Category from "../views/Category.vue";
 Vue.use(VueRouter);
-
 const routes = [
   {
     path: "/login",
@@ -19,9 +19,21 @@ const routes = [
     name: "Home",
     component: Home,
     children: [
-      { path: "/", name: "Console", component: Console },
-      { path: "/Articleedit", name: "Articleedit", component: Articleedit },
-      { path: "/Article", name: "Article", component: Article },
+      { path: "/Category/create", component: Category },
+      {
+        path: "/Category/:id",
+        component: Category,
+        props: true,
+      },
+
+      { path: "/", component: Console },
+      { path: "/Articleedit", component: Articleedit },
+      {
+        path: "/Articleedit/:blogId",
+        component: Articleedit,
+        props: true,
+      },
+      { path: "/Article", component: Article },
     ],
   },
   {

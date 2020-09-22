@@ -4,6 +4,8 @@ import "./plugins/element.js";
 import router from "./router";
 import Article from "./components/Article";
 import "./style.scss";
+import http from "./http";
+Vue.prototype.$http = http;
 
 Vue.config.productionTip = false;
 Vue.component("Article", Article);

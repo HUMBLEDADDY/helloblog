@@ -2,29 +2,58 @@
   <div>
     <div>
       <div class="thearticle">
-        <div class="name">
-          母猪的产后护理
-        </div>
+        <div class="name">{{articles.title}}</div>
 
         <div class="time">
           <i class="el-icon-date"></i>
-          <p>2020-09-17</p>
+          <p>{{articles.blogPostTime}}</p>
         </div>
         <div class="function">
-          <router-link class="edit" tag="div" to="/Articleedit">
-            <el-button type="primary" icon="el-icon-edit" circle></el-button>
-          </router-link>
           <el-button
-            class="delete"
-            type="danger"
-            icon="el-icon-delete"
+            type="primary"
+            @click="$router.push(`/Articleedit/${articles.blogId}`).catch((err) => {})"
+            icon="el-icon-edit"
             circle
           ></el-button>
+          <el-button class="delete" @click="remove()" type="danger" icon="el-icon-delete" circle></el-button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    articles: {
+      type: Object,
+      required: true,
+    },
+  },
+  methods: {
+    async remove() {
+      this.$confirm(`是否要删除${this.articles.title}?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(async () => {
+        await this.$http({
+          method: "post",
+          url: "/blog/deleteBlog",
+          params: {
+            blogId: this.articles.blogId,
+          },
+        });
+        this.$message({
+          type: "success",
+          message: "删除成功!",
+        });
+        this.$emit("refresh");
+      });
+    },
+  },
+};
+</script>
 
 <style lang="scss">
 .thearticle {
@@ -33,7 +62,6 @@
   width: 95%;
   height: 80px;
   border-bottom: 1px solid rgb(235, 235, 235);
-  display: block;
   .name {
     font-size: 1em;
     font-weight: bold;

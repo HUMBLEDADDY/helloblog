@@ -1,24 +1,44 @@
 <template>
   <div>
     <div>
-      <router-link tag="div" to="/Article" class="thearticle">
+      <router-link
+        tag="div"
+        :to="`/article/${articles.blogId}`"
+        class="thearticle"
+      >
         <div
           class="name"
           :class="{ active: hover }"
           @mouseover="hover = true"
           @mouseleave="hover = false"
         >
-          母猪的产后护理
+          {{ articles.title }}
         </div>
 
         <div class="time">
           <i class="el-icon-date"></i>
-          <p>2020-09-17</p>
+          <p>{{ articles.blogPostTime }}</p>
         </div>
       </router-link>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    articles: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      hover: false,
+    };
+  },
+};
+</script>
 
 <style lang="scss">
 .thearticle {
@@ -61,13 +81,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      hover: false,
-    };
-  },
-};
-</script>

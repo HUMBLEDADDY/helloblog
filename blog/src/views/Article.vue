@@ -1,20 +1,48 @@
 <template>
   <div class="thearticleinfo">
-    <div class="name">母猪的产后护理</div>
-    <div class="body">
-      如果你看到了这一篇文章，那么证明你已经安装成功了，感谢使用 Halo
-      进行创作，希望能够使用愉快。 相关链接 官网：https://halo.run
-      社区：https://bbs.halo.run 主题仓库：https://halo.run/s/themes
-      开源地址：https://github.com/halo-dev/halo
-      在使用过程中，有任何问题都可以通过以上链接找寻答案，或者联系我们。
-      这是一篇自动生成的文章，请删除这篇文章之后开始你的创作吧！
+    <div class="name">{{ this.modle.title }}</div>
+    <div class="tags">
+      <div
+        v-for="(tags, i) in this.modle.tagList"
+        :key="i"
+        :index="i"
+        class="tag"
+      >
+        {{ tags.tagName }}
+      </div>
     </div>
+    <div v-html="modle.blogContent" class="body"></div>
     <div class="time">
       <i class="el-icon-date"></i>
-      <p>2020-09-17</p>
+      <p>{{ this.modle.blogPostTime }}</p>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    blogId: {},
+  },
+  data() {
+    return {
+      modle: {},
+    };
+  },
+  methods: {
+    async fetch() {
+      const res = await this.$http.get(
+        `/blog/blogDetail?blogId=${this.blogId}`
+      );
+      this.modle = res.data.data;
+    },
+  },
+
+  created() {
+    this.fetch();
+  },
+};
+</script>
 
 <style lang="scss">
 .thearticleinfo {
@@ -24,6 +52,21 @@
   padding-top: 20px;
   border-bottom: 1px solid rgb(235, 235, 235);
   display: block;
+  .tags {
+    display: flex;
+    position: relative;
+    left: -5px;
+    .tag {
+      height: 25px;
+      background-color: #49726c;
+      margin: 0 5px;
+      padding: 0 10px;
+      line-height: 25px;
+      border-radius: 10px;
+      color: white;
+      font-size: 0.5em;
+    }
+  }
   .name {
     font-size: 1em;
     font-weight: bold;
@@ -39,7 +82,7 @@
   .body {
     position: relative;
     text-align: left;
-    margin-top: 20px;
+    margin-top: 10px;
   }
   .time {
     height: 18px;

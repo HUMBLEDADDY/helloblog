@@ -2,12 +2,11 @@
   <div
     @mouseover="(hover = true), (anotherhover = true), (theheight = 0)"
     @mouseleave="
-      (anotherhover = false), (theheight = 0 - tags.blogVOList.length * 80)
+      (anotherhover = false), (theheight = 0 - years.blogVOList.length * 80)
     "
   >
     <div class="thecategory">
-      <div class="categoryname">{{ tags.tagName }}</div>
-
+      <div class="categoryname">{{ years.year }}</div>
       <i class="el-icon-arrow-right" :class="{ active: anotherhover }"></i>
     </div>
     <div
@@ -16,7 +15,7 @@
       class="article show"
     >
       <Article
-        v-for="(articles, i) in tags.blogVOList"
+        v-for="(articles, i) in years.blogVOList"
         :key="i"
         :index="i"
         :articles="articles"
@@ -53,36 +52,15 @@
     transition-duration: 0.5s;
   }
   .active {
-    transition: 1s;
+    transition-duration: 0.5s;
     transform: rotate(90deg);
-  }
-}
-.show {
-  position: relative;
-  transition: 1s;
-  opacity: 0;
-}
-.article {
-  z-index: 1;
-  position: relative;
-  animation: showarticle 0.5s forwards;
-  opacity: 0;
-}
-@keyframes showarticle {
-  from {
-    top: -50px;
-    opacity: 0;
-  }
-  to {
-    top: 0px;
-    opacity: 1;
   }
 }
 </style>
 <script>
 export default {
   props: {
-    tags: {
+    years: {
       type: Object,
       required: true,
     },
