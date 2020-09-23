@@ -9,7 +9,7 @@ import "./assets/iconfont/iconfont.css";
 import http from "./http";
 import Global from "@/components/Global";
 
-Vue.prototype.$Global = Global; // 挂载到 Vue 实例上
+Vue.prototype.$Global = Global;
 
 Vue.prototype.$http = http;
 Vue.component("Article", Article);

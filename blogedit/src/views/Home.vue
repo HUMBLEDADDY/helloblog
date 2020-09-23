@@ -26,7 +26,6 @@
           <el-menu-item index="2-3">编辑标签</el-menu-item>
         </router-link>
       </el-submenu>
-      <el-menu-item index="3">附件</el-menu-item>
     </el-menu>
     <router-view></router-view>
   </div>

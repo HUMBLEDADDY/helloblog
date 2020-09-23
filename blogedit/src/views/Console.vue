@@ -25,7 +25,7 @@
       </div>
       <div class="tips">
         <div class="tipshead">速记</div>
-        <el-form>
+        <el-form @submit.native.prevent="insertMemo">
           <el-form-item>
             <el-input
               class="tipsinput"
@@ -36,7 +36,7 @@
               outline="none"
               maxlength="30"
               show-word-limit
-              v-model="textarea1"
+              v-model="memoContent"
             ></el-input>
           </el-form-item>
           <el-form-item>
@@ -46,6 +46,31 @@
       </div>
       <div class="tiplist">
         <div class="tiplisthead">速记清单</div>
+        <div class="memos">
+          <myScroll :ops="ops">
+            <div
+              v-for="(memo, i) in memo"
+              :key="i"
+              :index="i"
+              class="memo"
+              @mouseover="hover = i"
+            >
+              <div class="memocontent">
+                {{ memo.memoContent }}
+              </div>
+              <div class="function" v-if="hover === i">
+                <el-button
+                  size="mini"
+                  class="delete"
+                  @click="remove(memo)"
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                ></el-button>
+              </div>
+            </div>
+          </myScroll>
+        </div>
       </div>
     </div>
   </div>
@@ -177,6 +202,40 @@
       font-weight: bold;
       border-radius: 10px 10px 0 0;
     }
+    .memos {
+      height: 280px;
+      margin-top: 50px;
+      .memo {
+        position: relative;
+        margin: 0 auto;
+        width: 95%;
+        height: 40px;
+        border-bottom: 1px solid rgb(235, 235, 235);
+        .memocontent {
+          line-height: 40px;
+          position: relative;
+          float: left;
+          font-size: 1em;
+          font-weight: bold;
+          letter-spacing: 1px;
+          color: rgb(99, 99, 99);
+        }
+        .function {
+          width: 100px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          float: right;
+          position: relative;
+          justify-content: space-around;
+          align-content: space-around;
+          .delete {
+            position: absolute;
+            float: right;
+          }
+        }
+      }
+    }
   }
 }
 </style>
@@ -185,25 +244,63 @@
 export default {
   data() {
     return {
+      ops: {
+        // some configs....
+      },
       articles: [],
-      textarea1: "",
+      memoContent: "",
       thenumofarticle: 34,
       thenumberofarticle: 0,
       thenumofdate: 123,
       thenumberofdate: 0,
-      count: [],
       memo: [],
+      hover: -1,
     };
   },
   methods: {
+    async remove(memo) {
+      this.$confirm(`是否要删除${memo.memoContent}?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(async () => {
+        await this.$http({
+          method: "post",
+          url: "/memo/deleteMemo",
+          params: {
+            memoId: memo.memoId,
+          },
+        });
+        this.$message({
+          type: "success",
+          message: "删除成功!",
+        });
+        this.$emit("refresh");
+      });
+      this.recentMemo();
+    },
     async getarticle() {
       const res = await this.$http.get("blog/recentBlogByPage");
       this.articles = res.data.data;
-      this.thenumofarticle = res.data.data.length;
+    },
+    async insertMemo() {
+      await this.$http({
+        url: "/memo/insertMemo",
+        method: "post",
+        params: {
+          memoContent: this.memoContent,
+        },
+      });
+      this.recentMemo();
+    },
+    async count() {
+      const res = await this.$http.get("/user/countInfo");
+      this.thenumofarticle = res.data.data.blogMount;
+      this.thenumofdate = res.data.data.registrationDate;
       this.begin();
     },
     async recentMemo() {
-      const res = await this.$http.get("memo/recentMemoo");
+      const res = await this.$http.get("memo/recentMemo");
       this.memo = res.data.data;
     },
     begin() {
@@ -223,6 +320,7 @@ export default {
   },
   created() {
     this.getarticle();
+    this.count();
     this.recentMemo();
   },
 };
